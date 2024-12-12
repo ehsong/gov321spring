@@ -1,5 +1,5 @@
 # gov321spring
-Repository for gov321 quantiative methods course spring 2025.
+Repository for gov321 quantiative methods course spring 2025 at the department of government, uib.
 
 *Please install R and R studio (follow instructions in the link below) and also download DSS folder.*
 
