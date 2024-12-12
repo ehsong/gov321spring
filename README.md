@@ -1,2 +1,2 @@
 # gov321spring
-gov321-uib
+Repository for gov321 quantiative methods course spring 2025.
