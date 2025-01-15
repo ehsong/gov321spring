@@ -1,5 +1,7 @@
 # gov321spring
-Repository for gov321 quantiative methods course spring 2025 at the department of government, uib.
+Repository for gov321 quantiative methods course spring 2025 at the department of government, UiB.
+
+Includes materials for lecture 5 Feb, and seminars 10 Feb - 13 Feb 2025. See course schedule [here](https://tp.educloud.no/uib/timeplan/timeplan.php?id=GOV321&type=course&sem=25v&hide_old=1).
 
 *Please install R and R studio (follow instructions in the link below) and also download DSS folder.*
 
