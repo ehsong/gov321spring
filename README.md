@@ -1,7 +1,7 @@
 # gov321spring
-Repository for gov321 quantiative methods course spring 2025 at the department of government, UiB.
+Repository for GOV321 quantiative methods course spring 2025 at the department of government, UiB.
 
-Includes materials for lecture 5 Feb, and seminars 10 Feb - 13 Feb 2025. See course schedule [here](https://tp.educloud.no/uib/timeplan/timeplan.php?id=GOV321&type=course&sem=25v&hide_old=1).
+Includes materials for lecture 5 Feb, and seminars 10 Feb - 12 Feb 2025. See course schedule [here](https://tp.educloud.no/uib/timeplan/timeplan.php?id=GOV321&type=course&sem=25v&hide_old=1).
 
 *Please install R and R studio (follow instructions in the link below) and also download DSS folder.*
 
@@ -9,3 +9,5 @@ Book: [Data Analysis for Social Science: A Friendly and Practical Introduction.]
 
 Download R and R studio here https://posit.co/download/rstudio-desktop/   
 Download DSS folder from https://press.princeton.edu/student-resources/data-analysis-for-social-science   
+
+
