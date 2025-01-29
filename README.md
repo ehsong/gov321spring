@@ -10,4 +10,5 @@ Book: [Data Analysis for Social Science: A Friendly and Practical Introduction.]
 Download R and R studio here https://posit.co/download/rstudio-desktop/   
 Download DSS folder from https://press.princeton.edu/student-resources/data-analysis-for-social-science   
 
-
+### Additional Resources for Praciting R
+- [R Swirl](https://swirlstats.com/)
