@@ -13,14 +13,14 @@ Book: [Data Analysis for Social Science: A Friendly and Practical Introduction.]
 Download R and R studio here https://posit.co/download/rstudio-desktop/   
 Download DSS folder from https://press.princeton.edu/student-resources/data-analysis-for-social-science
 
-### Lecturea and Seminar Schedule
+### Lectures and Seminar Schedule
 
 There will be one introduction to R lecture and three seminars. We will be using R Markdowns in the sessions (files with extensions `.Rmd`), which are used to produce pdfs or html files that contains code and figures. Please get familiar with markdown [here](https://rmarkdown.rstudio.com/articles_intro.html).
 
-- 5 Feb: Introduction to R [[Rmd]][[html]]   
-- 10 Feb: Working with Survey Data in R [[Rmd]][[html]]    
-- 11 Feb: Regression in R [[Rmd]][[html]]     
-- 12 Feb: Experiments [[Rmd]][[html]]    
+- 5 Feb: Introduction to R Rmd html   
+- 10 Feb: Working with Survey Data in R Rmd html    
+- 11 Feb: Regression in R Rmd html    
+- 12 Feb: Experiments Rmd html    
 - 13 Feb: Compulsory Assignment (in-class exam)     
 
 ### Additional Resources for Learning R
