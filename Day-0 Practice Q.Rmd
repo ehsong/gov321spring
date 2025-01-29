@@ -1,0 +1,32 @@
+---
+title: "Day-0 Practice Questions"
+output: html_document
+date: "2025-01-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Try answering the following questions using the British Election Study data.
+
+1. Which variables contain missing values? 
+2. How many 'don't know' responses are in the dataset?
+3. What is the percentage of respondents who answered 'leave'?
+4. What is the percentage of respondents who answered 'don't know'? 
+5. Plot the distribution of answers in the 'vote' column?
+6. What is the average age of the respondents?
+7. What percent of respondents in the data set are over 60? (tip: Use logical operators `>, <, ==, !=, <=, >=`)
+8. What percent of respondents in the data set are exactly 60 years old?
+9. What percent of respondents in the data set are NOT 60 years old?
+10. What is the distribution of age? Do you notice anything? (tip: use `hist()` and `boxplot()`)
+11. Examine distribution of age of brexit supporters and non-supporters. What do you notice?
+12. Check distribution of brexit non-supporters by education levels.
+
+```{r}
+bes<-read.csv('BES.csv')
+
+# examine the data --
+head(bes)
+str(bes)
+```

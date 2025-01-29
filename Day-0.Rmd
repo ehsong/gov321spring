@@ -1,0 +1,303 @@
+---
+title: "GOV321"
+subtitle: "Day 0: Introduction to R"
+
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    toc_depth: 5
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Introduction to R 
+
+This document summarizes code that are essential to using R for data analysis. The code will center on basic operations, data parsing, and data management. Much of the code here is from the book, Data Analysis for Social Science by Elena Llaudet and Kosuke Imai Chapter 1 and Chapter 3.
+
+Before running any of the script in this file please download R, R Studio, and the data folder used for this script. The data is 'DSS' folder. Make sure to also place this Rmd file within the DSS folder.
+
+Book: [Data Analysis for Social Science: A Friendly and Practical Introduction](https://press.princeton.edu/books/hardcover/9780691199429/data-analysis-for-social-science?srsltid=AfmBOoqLPGlaKX_wXCl7hVGphtWi5FpiGvUIBj2_nqAZHIY8c02XHFUp) by Elena Llaudet and Kosuke Imai 
+
+Download R and R studio here https://posit.co/download/rstudio-desktop/   
+Download DSS folder from https://press.princeton.edu/student-resources/data-analysis-for-social-science
+
+While running the script use use `?function_name` for more information on how to use the parameters of the function (ex: `?subset`)
+
+#### Setting the Working Directory
+
+In R studio go to Session > Set Working Directory > Choose Directory    
+MAC OS: setwd("~/FolderName/FolderName/FolderName/DSS")
+
+##### Dataframe and data types
+
+```{r}
+a <- c(1,2,3,4)
+b <- factor(c('male','female','male','male')) # factor
+c<-c(19, NA, 27, 34) # numeric
+d <- c("blue", "white", "black", NA) # character
+e <- c(TRUE,TRUE,TRUE,FALSE) # logical
+
+df <- data.frame(a,b,c,d,e) # create dataframe
+names(df) <- c("ID","Gender", "Age","Color","Passed") # variable names
+```
+
+Often times you need to check the data types of each column before conducting any data manipulation or analysis. In these cases use `str()`.
+
+```{r}
+str(df)    # structure of an object
+```
+
+Data types are important because some functions do not work on certain data types. For instance, a lot of functions used for calculations like `mean()` or `sum()` do not work if the data type is not numeric or logical.
+
+```{r}
+mean(df$Gender) # factor
+mean(df$Color) # character
+
+mean(df$Passed) # logical
+```
+
+Some functions do not work when there are `NA` - missing data; in these cases you need specify that you want to omit `NA` using option `na.rm=TRUE`. The `Age` column in the data frame included `NA`:
+
+```{r}
+df$Age
+```
+
+```{r}
+mean(df$Age)
+max(df$Age)
+min(df$Age)
+```
+
+```{r}
+mean(df$Age, na.rm=TRUE)
+max(df$Age, na.rm=TRUE)
+min(df$Age, na.rm=TRUE)
+```
+
+##### Check rows and columns
+
+```{r}
+dim(df) # number of rows and columns
+
+dim(df)[1] # number of rows
+dim(df)[2] # number of columns
+```
+
+You can examine the first and last rows of the data frame by using `head()` and `tail()`, the default is 5 rows but you can adjust using the parameter `n`
+```{r}
+head(df)
+tail(df)
+
+head(df, n=3)
+tail(df, n=1)
+```
+
+You may want to sort the data so you can see the rows according to the highest or lowest value of a certain column:
+
+```{r}
+df[order(df$Age),] # sort by age, ascending
+```
+
+```{r}
+df[order(df$Age, decreasing=TRUE),] # sort by age, descending
+```
+
+##### Access variables
+The easiest way to access columns is using `$`. You can refer to columns using the column names after `attach()`. However you should use `detach()` to go back to referring to columns using `$`.
+
+```{r}
+df$Passed
+```
+
+```{r}
+attach(df)
+Passed
+```
+Use `detach()` to put it back:
+```{r}
+detach(df)
+df$Passed
+```
+
+##### Indexing and subsetting 
+What if you want to access multiple columns, subset, or access specific rows? All these operations are called 'indexing' in R. The most simple way for indexing is using brackets `[]` after the data frame object and identifying the column and row numbers numerically. For continuous indexing use semicolon `:`, for specific columns specify them in vector format `c()`. Leave the space empty to access all rows or all columns.
+
+```{r}
+df[1,] # first row, all columns
+df[2,] # second row, all columns
+```
+
+```{r}
+df[,1:2] # all rows, columns 1 and 2
+```
+
+Accessing specific columns with column names:
+```{r}
+df[,c('Age','Color')]
+```
+
+Another example using function `is.na()` to identify part of the dataframe which is not `NA`.
+```{r}
+df[!is.na(df$Age), ]
+```
+
+This function works because `is.na()` retrieves logical values `TRUE` or `FALSE`, and putting them within the brackets `[]` is equivalent to asking R to on retrieve those that are `TRUE` or `FALSE`. The exclamation mark `!` is used for negation. See following to understand what each operation is doing:
+
+```{r}
+df$Age
+is.na(df$Age)
+df[is.na(df$Age),]
+df[!is.na(df$Age),]
+```
+
+When subsetting, you need to include `!is.na()` condition to retrieve a clean subset:
+```{r}
+df[(df$Age > 30),] # returns a row with NAs
+df[!is.na(df$Age) & df$Age > 30, ]
+```
+
+Another way to subset is using `subset()` function which does not require `!is.na()`
+```{r}
+subset(df, Age > 30) 
+subset(df, Age > 30, select=c(ID,Color,Passed))
+```
+
+##### Missing values
+
+Other than using `is.na()` within the brackets `[]`, to retrieve the data set with only complete cases, use `na.omit()`
+
+```{r}
+na.omit(df)
+```
+
+Or use the function `complete.cases()`
+```{r}
+df[complete.cases(df),]
+```
+
+```{r}
+df[!complete.cases(df),]
+```
+
+##### Recoding and generating variables 
+Often times you need to recode the variables so they are numeric; or you need replace certain values into other values. In R you can easily do this by just assigning values using arrow sign `<-` to a new column of a dataframe. Arrow sign can be also used to copy objects and functions, and columns and rows of dataframes.
+
+```{r}
+df2<-df # first copy dataframe 'df'
+
+df2$random_var<-1 # assign values to a new column 'random_var'
+df2
+```
+Assign `NULL` to remove the column:
+```{r}
+df2$random_var<-NULL
+df2 # random_var column is removed
+```
+You can also use the arrow sign `<-` to duplicate columns within a dataframe:
+```{r}
+df2$Car_Color<-df2$Color # duplicate column within the data frame
+df2
+```
+
+Generating a column based on another column. For the variable `Passed` remember the data type is logical. You might want to change this into numeric. `ifelse()` is useful in these cases, when the variable is logical `TRUE` or `FALSE`.
+```{r}
+df2$Passed_dum<-ifelse(df2$Passed==TRUE, 1, 0) # creating a dummy variable
+df2
+```
+
+If the variable is not logical, you need to assign each value separately. Models in R cannot deal with character types. Following example generates a numeric variable based on `Color`, which is a character data type:
+```{r}
+df2$Color_num[df2$Color=='white']<-1
+df2$Color_num[df2$Color=='black']<-2
+df2$Color_num[df2$Color=='blue']<-3
+df2
+```
+Another way to manage character variable is to turn them to factors using `factor()`. You need to specify the levels using `levels=c()` option.
+```{r}
+df2$Color_fac<-factor(df2$Color, levels=c('white','black','blue'))
+```
+Use these operations to replace `NA`:
+```{r}
+df2$Age[is.na(df2$Age)]<-26 # replace NA from Age column with 26
+df2
+```
+
+#### `summary()` and frequency tables
+Let's put all the above together and examine the data. You can identify the `NA`, find max and min values; the average. To obtain all of these indicators, use `summary()`. Also you can use the `table()` and `prop.table()` to examine frequencies.
+
+```{r}
+unique(df$Gender) # check categories, useful for categorical variables
+unique(df$Color)
+
+mean(df$Age,na.rm=TRUE) # useful for numeric variables
+max(df$Age, na.rm=TRUE)
+min(df$Age, na.rm=TRUE)
+
+summary(df[,2:5]) # remove ID column
+summary(df$Age) # more useful for numeric variables
+```
+
+You can try recoding some of the factor and character variables to obtain the summary:
+```{r}
+df5<-df
+df5$Gender_dum<-ifelse(df5$Gender=='male', 1, 0)
+df5$Passed_dum<-ifelse(df5$Passed==TRUE, 1, 0)
+
+summary(df5[,c('Gender_dum', 'Age', 'Passed_dum')]) # notice how NA is ignored for 'Age'
+```
+
+Use frequency tables to check proportions and counts. The default does not count `NA`, and you must use the parameter `exclude=NULL` to count`NA`. This is useful for character and factor data types:
+```{r}
+table(df$Passed) 
+table(df$Color)
+table(df$Gender)
+
+table(df$Color, exclude=NULL) # count NA
+```
+
+You can obtain proportion tables:
+```{r}
+prop.table(table(df$Gender)) # proportions
+prop.table(table(df$Gender, df$Passed)) # two way proportion table of Gender and Passed
+```
+
+#### Visualizations
+
+Here we will cover basic plot functions `plot()` `barplot()` and `hist()`. Pay attention to the parameters so that you can label the x-axis, y-axis properly.
+```{r barplot}
+barplot(table(df$Passed), horiz=TRUE, xlim=c(0,4),
+        ylab='Pass/Fail', xlab='Counts', main="Pass Fail Counts")
+```
+
+Create a two column dataframe to use `hist()` to check distribution and `plot()` to see relationship between the two variables.
+```{r}
+x<-sample(1:200, 70, replace=TRUE)
+y<-sample(1:200, 70, replace=TRUE)
+df4<-data.frame(x,y)
+names(df4)<-c('x','y')
+head(df4)
+
+attach(df4)
+hist(x)
+```
+
+```{r}
+plot(x,y)
+```
+
+Boxplots display quartiles. The following shows examples when there are no outliers versus when there are outliers:
+```{r}
+boxplot(x) 
+boxplot(y)
+```
+
+With outliers:
+```{r}
+y<-sample(1:200, 70, replace=TRUE)
+new_y<-append(y, c(486, 499, 500))
+boxplot(new_y) # displays outliers
+```
