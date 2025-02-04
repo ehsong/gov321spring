@@ -32,6 +32,6 @@ To view the html file properly please download from the link and open it using a
 - [R Swirl](https://swirlstats.com/) - this is an interactive software within R containing modules you can practice with.
 - [W3Schools R Exercises](https://www.w3schools.com/r/r_exercises.asp)
 
-### Questions
+### Questions?
 
 If you have any questions about the content or the schedule, contact instructors: Esther Song (esther.song@uib.no) and Soran Hajo Dahl (Soran.Dahl@uib.no).
