@@ -15,8 +15,7 @@ Download DSS folder from https://press.princeton.edu/student-resources/data-anal
 
 ### Schedule
 
-There will be one introduction to R lecture and three seminars. The instructors are Esther Song (esther.song@uib.no) and Soran Hajo Dahl (Soran.Dahl@uib.no).   
-We will be using R Markdown in the sessions (files with extensions `.Rmd`), which are used to produce pdfs or html files that contains code and figures. We will be using very basic R markdown syntax. You can read up on R markdown [here](https://rmarkdown.rstudio.com/articles_intro.html). 
+There will be one introduction to R lecture and three seminars. We will be using R Markdown in the sessions (files with extensions `.Rmd`), which are used to produce pdfs or html files that contains code and figures. We will be using very basic R markdown syntax. You can read up on R markdown [here](https://rmarkdown.rstudio.com/articles_intro.html). 
 
 To view the html file properly please download from the link and open it using a web browser. To open `.Rmd` file you need R and R studio installed.
 
@@ -32,3 +31,7 @@ To view the html file properly please download from the link and open it using a
 ### Additional Resources for Learning R
 - [R Swirl](https://swirlstats.com/) - this is an interactive software within R containing modules you can practice with.
 - [W3Schools R Exercises](https://www.w3schools.com/r/r_exercises.asp)
+
+### Questions
+
+If you have any questions about the content or the schedule, contact instructors: Esther Song (esther.song@uib.no) and Soran Hajo Dahl (Soran.Dahl@uib.no).
