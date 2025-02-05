@@ -20,7 +20,7 @@ There will be one introduction to R lecture and three seminars. We will be using
 To view the html file properly please download from the link and open it using a web browser. To open `.Rmd` file you need R and R studio installed.
 
 - 5 Feb: Day 0 Introduction to R [Rmd](https://github.com/ehsong/gov321spring/blob/main/Day-0.Rmd) [html](https://github.com/ehsong/gov321spring/blob/main/Day-0.html) (practice questions: [Rmd](https://github.com/ehsong/gov321spring/blob/main/Day-0%20Practice%20Q.Rmd), answer key: [html](https://github.com/ehsong/gov321spring/blob/main/Day-0-Answer-Keys.html))
-  - Chapters 1 & 3
+  - Introduction, Chapters 1 & 3
 - 10 Feb: Day 1 Working with Survey Data in R Rmd
   - Chapters 1 & 3
 - 11 Feb: Day 2 Regression in R Rmd
