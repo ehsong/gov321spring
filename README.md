@@ -26,7 +26,7 @@ To view the html file properly please download from the link and open it using a
 - 11 Feb: Day 2 Regression in R Rmd
   - Chapters 4 and 7.3-7.6 in Chapter 7
 - 12 Feb: Day 3 Experiments Rmd    
-- 13 Feb: Compulsory Assignment (in-class exam)     
+- 13 Feb: Compulsory Assignment (in-class exam, open book)     
 
 ### Additional Resources for Learning R
 - [R Swirl](https://swirlstats.com/) - this is an interactive software within R containing modules you can practice with.
