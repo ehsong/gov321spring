@@ -1,0 +1,565 @@
+---
+title: "GOV321"
+subtitle: "Day 2: Regression in R"
+author: "DIGSSCORE LAB"
+date: "Seminars 12-15.02"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    toc_depth: 5
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+In the previous session, we focused on exploring datasets and conducting
+basic descriptive analyses to summarize key patterns in the data. While
+descriptive statistics are useful for understanding the overall
+characteristics of your data, they often fall short in answering
+questions about relationships between variables or enabling predictions.
+
+In this session, we'll take the next step by learning how to model and
+quantify the relationship between an **outcome variable** and one or
+more **predictor variables** using linear regression. This powerful tool
+allows us to make two types of predictions:
+
+1.  Predict the average value of the outcome variable for a given value
+    of the predictor.
+
+2.  Predict the average change in the outcome variable associated with a
+    change in the value of the predictor.
+
+To make this concrete, we will work through the example of whether
+**left-right self-placement** (`lr_scale`) predicts **immigration
+attitudes** (`immigration`). Linear regression is a fundamental tool in
+data analysis and forms the basis for more advanced statistical and
+machine learning models. By the end of this session, you'll have the
+skills to fit, interpret, and evaluate simple linear regression models
+using R.
+
+------------------------------------------------------------------------
+
+### Does left-right self-placement predict immigration attitudes?
+
+In recent decades, attitudes toward immigration have become a major
+political issue in Europe and beyond. A key question in political
+science is understanding what drives these attitudes. One factor
+frequently identified as influential is ideological orientation.
+
+Ideological orientation is often conceptualized as a continuum, ranging
+from left-wing to right-wing. While this simplification cannot fully
+capture the complexity of political beliefs, it has proven remarkably
+predictive of a wide range of attitudes and behaviors. In this session,
+we will investigate whether ideological self-placement along the
+left-right spectrum predicts attitudes toward immigration.
+
+The prevailing expectation is that right-wing ideology is associated
+with more restrictive immigration attitudes, while left-wing ideology is
+linked to more positive or permissive views on immigration. Based on
+this reasoning, the hypothesis we will be testing is:
+
+> **Hypothesis:** Left-right self placement has no relationship with
+> immigration attitudes.
+
+The hypothesis is also called the null hypothesis. The alternative
+hypothesis is that there is a correlation between left-right self
+placement and immigration attitudes.
+
+> **Alternative Hypothesis:** Those who place themselves towards the
+> left are more likely to harbor permissive views on immigration.
+
+------------------------------------------------------------------------
+
+## Packages
+
+Before we proceed, we need to install and load two **packages** that
+will improve the presentation of results and aid in our interpretation
+of them. Packages are collections of functions, data, and code
+contributed by the broader R community to extend R's capabilities.
+
+In this session, we will use the following packages:
+
+1.  **`stargazer`**: To create clean, publication-ready tables for
+    regression output.
+
+2.  **`sjPlot`**: To generate highly customizable figures for
+    visualizing model results.
+
+#### Installing Packages
+
+To install a package, we use the `install.packages()` function. Once a
+package is installed, it is permanently added to your library and does
+not need to be re-installed unless updated or removed. To install the
+packages:
+
+```{r, message = F, warning=FALSE}
+# Set CRAN mirror
+options(repos = c(CRAN = "https://cloud.r-project.org/"))
+
+# Install required packages
+install.packages("stargazer")
+install.packages("sjPlot")
+```
+
+#### Loading Packages
+
+To use an installed package in your current session, it must be loaded
+into R using the `library()` function:
+
+```{r, message = F}
+# Load the required packages
+library(stargazer)
+library(sjPlot)
+```
+
+------------------------------------------------------------------------
+
+## Loading Data
+
+We use the same dataset as in the previous session. As a reminder, this
+dataset comes from a survey conducted with a representative sample of
+the adult Norwegian population in the spring of 2024.
+
+```{r}
+load("ncp_min.RData")
+```
+
+To refresh our memories about the structure of the dataset, let's take a
+quick look at its variables:
+
+```{r}
+str(ncp_min) # Returns an overview of variables (columns) in the dataset
+```
+
+To test the hypothesis that right-wing self-placement is associated with
+more restrictive immigration attitudes, we will use the `immigration`
+and `lr_scale` variables, which we discussed in the previous session.
+
+The `immigration` variable captures respondents' perceptions of whether
+immigration is advantageous or disadvantageous for Norway. The precise
+wording of the question and its response alternatives are as follows:
+
+> **Question:**
+>
+> "In your opinion how great an advantage or disadvantage is it for
+> Norway that immigrants come to live here?"
+>
+> **Response alternatives:**
+>
+> 1.  A very great advantage
+> 2.  A great advantage
+> 3.  A slight advantage
+> 4.  Neither an advantage nor a disadvantage
+> 5.  A slight disadvantage
+> 6.  A great disadvantage
+> 7.  A very great disadvantage
+
+Note that this variable is measured on a 7-point scale, with lower
+values indicating a more positive perception of immigration and higher
+values indicating a more negative perception.
+
+To measure left-right ideology, we use the `lr_scale` variable. The
+question and response alternatives are as follows:
+
+> **Question:**
+>
+> In politics people often talk about the "left wing" and the "right
+> wing." Below is a scale where 0 represents those who are on the far
+> left politically, while 10 represents those who are on the far right.
+>
+> Where would you place yourself on such a scale?
+>
+> **Response alternatives:**
+>
+> 0 = Left wing ... 10 = Right wing
+
+This variable is measured on an 11-point scale, with lower values
+indicating left-wing positions and higher values indicating right-wing
+positions.
+
+These two variables will allow us to examine whether ideological
+self-placement predicts attitudes toward immigration. Let's now proceed
+to the analysis!
+
+#### Educational example:
+
+As we saw in the last session, our dataset is quite large and somewhat
+messy (as real world data typically is). For our first analysis, we'll
+simplify things to make the learning process more manageable and help us
+build an intuition about how linear regression works. We'll focus on a
+subset of 10 carefully selected respondents. These respondents were
+deliberately chosen---not randomly---to illustrate key concepts. (Keep
+in mind, this is purely for demonstration purposes---don't do this at
+home!)
+
+We subset our data by row number (each row representing an individual
+respondent) using the syntax introduced in the previous session. The
+following code selects a subset of 10 specific respondents from the
+dataset `ncp_min`, and store the output in a new dataset called
+`ncp_10`:
+
+```{r}
+ncp_10 <- ncp_min[c(1, 2, 7, 11, 12, 20, 21, 24, 26, 27),]
+
+```
+
+### Scatterplot and correlation
+
+In the previous session, we produced a scatter plot to examine the
+relationship between left-right self-placement (`lr_scale`) and
+immigration attitudes (`immigration`) using the whole data set. However,
+the results were messy and challenging to interpret. Now, we'll recreate
+the scatter plot using our carefully selected subset of 10 respondents.
+Note that we always plot the predictor on the x-axis, and the outcome
+variable on the y-axis. In this case, to visualize the relationship
+between `immigration` and `lr_scale`, we run:
+
+```{r}
+# Scatter plot with jitter
+plot(ncp_10$lr_scale, ncp_10$immigration,
+     xlab = "Left-Right Self-Placement",
+     ylab = "Immigration Attitudes",
+     main = "Scatterplot: Left-Right Self-Placement vs Immigration Attitudes",
+     xlim = c(0,10), 
+     ylim = c(1, 7))
+```
+
+The plot reveals a clear pattern, indicating a positive relationship
+between the two variables: higher values on the `lr_scale` variable
+(representing a more right-wing ideological position) are associated
+with higher values on the `immigration` variable (indicating more
+restrictive immigration attitudes).
+
+This visual observation aligns with our hypothesis that right-wing
+self-placement predicts more restrictive attitudes toward immigration.
+
+To quantify this relationship, we compute the correlation coefficient
+between the two variables using `cor()`:
+
+```{r}
+# Correlation between left-right self-placement and immigration attitudes
+cor(ncp_10$lr_scale, ncp_10$immigration, use = "complete.obs")
+```
+
+The correlation coefficient is a statistical measure that quantifies the
+*strength* and *direction* of a linear relationship between two
+variables.
+
+In our case, the correlation coefficient is positive, indicating that
+when `lr_scale` increases (moving toward the right-wing), `immigration`
+tends to increase (more restrictive immigration attitudes). Furthermore,
+with a value of 0.78, the correlation is strong, suggesting a robust
+linear relationship between the two variables.
+
+#### **From Correlation to Linear Regression**
+
+If the two variables are related in this way, it implies that when one
+variable changes by a certain amount, the other variable changes, on
+average, by a predictable amount. For example, a shift of one point on
+the left-right scale (`lr_scale`) toward the right may correspond to a
+measurable shift in immigration attitudes (`immigration`).
+
+**Linear regression** is used to estimate this relationship
+mathematically by fitting a straight line through the data.
+Specifically, it fits the line that minimizes the sum of squared
+residuals (`SSR`). Note that residuals refer to the distance between the
+predicted outcome and the observed outcome, and are also called
+**prediction errors**. The fitted line represents the predicted values
+of the outcome variable (`immigration`) given specific values on the
+predictor variable (`lr_scale`). As noted in the introduction, we can
+use this to:
+
+1.  Predict the average value of the outcome variable (`lr_scale`) for a
+    given value of the predictor (`lr_scale`).
+
+2.  Predict the average change in the outcome (`immigration`) variable
+    associated with a change in the value of the predictor (`lr_scale`).
+
+------------------------------------------------------------------------
+
+## Fitting a Linear Regression Model in R
+
+We fit the linear regression model using the `lm()` function, which
+stands for "linear model."
+
+The `lm()` function uses the formula notation `outcome ~ predictor`. The
+tilde (`~`) separates the outcome variable on the left-hand side from
+the predictor variable on the right-hand side. It specifies that the
+outcome variable is being modeled as a function of the predictor
+variable.
+
+We save the regression model in an object named `fake_lm` (to remind
+ourselves we are working with manipulated data).
+
+**NB**: keep in mind that the `lm()` function automatically excludes
+rows with `NA` values in any of the variables used.
+
+```{r}
+fake_lm <- lm(immigration ~ lr_scale, data = ncp_10)
+```
+
+### Visualizing the Fitted Regression Line
+
+We can visualize the fitted regression line on the scatter plot from
+earlier using the `abline()`function. We also add grid lines using
+`grid()` to aid in the interpretation.
+
+```{r}
+# Scatter plot with jitter
+plot(ncp_10$lr_scale, ncp_10$immigration,
+     xlab = "Left-Right Self-Placement",
+     ylab = "Immigration Attitudes",
+     main = "Scatterplot: Left-Right Self-Placement vs Immigration Attitudes",
+     xlim = c(0,10), 
+     ylim = c(1, 7))
+
+# Adds regression line
+abline(fake_lm, col = "red")
+
+# Adds grid lines
+grid()
+```
+
+Notice that none of the actual observations lie perfectly on the line.
+This is expected: we are not trying to perfectly match our observations
+but rather use them to predict unobserved values. The line represents
+our best estimate of where unobserved values are likely to fall, based
+on the observations we have.
+
+#### Summarizing and Interpreting the Model
+
+To view the results, we wrap the model in the `summary()` function:
+
+```{r}
+summary(fake_lm)
+```
+
+The output provides several key components for interpreting the model:
+
+1.  **Intercept**: The predicted value of the outcome variable
+    (`immigration`) when the predictor variable (`lr_scale`) is 0. This
+    represents the baseline level of immigration attitudes for
+    individuals at the leftmost end of the ideological spectrum. In the
+    summary output, this is shown as the **Estimate** for the
+    `(Intercept)`.
+
+2.  **Slope Coefficient**: The amount by which the outcome variable
+    (`immigration attitudes`) changes for a one-unit increase in the
+    predictor variable (`lr_scale`). A positive slope indicates that
+    more right-wing self-placement is associated with more restrictive
+    immigration attitudes. In the summary output, this is shown as the
+    **Estimate** for `lr_scale`.
+
+3.  **R² (R-squared)**: The proportion of variation in the outcome
+    variable (`immigration`) explained by the model. In our model, the
+    R² value is 0.61, meaning the model explains 61% of the variation in
+    `immigration`. Generally, the higher the R² value, the better the
+    model fits the data. However, keep in mind that R² always increases
+    as more predictors are added, regardless of their relevance.
+
+4.  **Adjusted R²**: Unlike R², Adjusted R² penalizes for adding
+    unnecessary predictors to the model. It accounts for the number of
+    predictors and provides a more accurate measure of model fit,
+    especially when comparing models with different numbers of
+    predictors.
+
+5.  **Significance Levels (p-values)**: The summary output also provides
+    **p-values** for the intercept and slope coefficient. Note that the
+    p-value refers to the likelihood of observing the test statistic (in
+    this case the z-statistic) when the null hypothesis is true.
+    P-values help evaluate whether the relationship between the
+    predictor (`lr_scale`) and the outcome (`immigration`) is
+    statistically significant. For example:
+
+    -   A p-value less than 0.05 is commonly used as a threshold to
+        suggest that the predictor has a significant effect on the
+        outcome variable. This is because the likelihood of observing
+        the test statistic is small (less than 5%) under the null
+        hypothesis and therefore we reject the null hypothesis that the
+        predictor has no effect on the outcome variable.
+
+        However, it's important to remember that the 5% threshold is
+        simply a convention, not a strict rule.
+
+    -   The **stars or significance codes** in the output provide a
+        quick visual cue: `***` for highly significant, `**` for
+        moderately significant, and `*` for marginally significant
+        predictors.
+
+By examining these components, we can evaluate the model's predictive
+power, interpret the relationship between variables, and assess the
+reliability of the estimates.
+
+> **QUESTION: What is the predicted value of `immigration` for
+> respondents who place themselves as a 0 (far left) on the
+> `lr_scale`?**
+
+> **QUESTION: What approximately is the predicted change in
+> `immigration` for a one-unit increase in `lr_scale`?**
+
+### Extending the Analysis to the Whole Dataset
+
+Now that we've learned how to fit and interpret a linear regression
+model using a subset of data, we'll extend the analysis to the entire
+dataset. Using the full dataset allows us to make more generalizable
+conclusions about the relationship between left-right self-placement
+(`lr_scale`) and immigration attitudes (`immigration`).
+
+#### Fitting the Model to the Full Dataset
+
+We'll use the same syntax as before but specify the full dataset
+(`ncp_min`) in the `lm()` function. Since we are fitting the model with
+only one predictor variable (`lr_scale`), we'll name the model
+`univariate_lm` to reflect this:
+
+```{r}
+univariate_lm <- lm(immigration ~ lr_scale, data = ncp_min)
+```
+
+#### Evaluating the Model with `summary()`
+
+To interpret the results of the full dataset model, we use the
+`summary()` function:
+
+```{r}
+summary(univariate_lm)
+```
+
+### Questions:
+
+1.  What is the **Intercept** for the full dataset model? What does it
+    represent in the context of the data?
+
+2.  What is the **slope coefficient**? How does it compare to the slope
+    from the subset analysis?
+
+3.  How much variation in `immigration` is explained by the model (based
+    on the R² value)? Is this higher or lower than the subset analysis?
+    Why might this be the case?
+
+4.  Is the relationship between `lr_scale` and `immigration`
+    statistically significant? What is the p-value for the slope
+    coefficient?
+
+5.  Based on the regression line, predict the immigration attitudes of
+    respondents who place themselves at `lr_scale = 5` (center) and
+    `lr_scale = 10` (far right).
+
+### Expanding to Multivariate Linear Regression
+
+Now that we've explored univariate linear regression using a single
+predictor variable (`lr_scale`), we'll expand the model to include
+additional predictors. Multivariate linear regression allows us to
+account for multiple variables simultaneously.
+
+In this example, we'll include the following additional predictors:
+
+-   **`yob`** (Year of Birth): Represents the respondent's birth year
+    and serves as a proxy for age.
+
+-   **`gender`**: A categorical variable indicating the respondent's
+    gender.
+
+-   **`education`**: Represents the respondent's highest achieved
+    education level.
+
+These variables might also influence attitudes toward immigration, and
+including them will help us see how `lr_scale` predicts `immigration`
+while controlling for these additional factors.
+
+## Fitting the Multivariate Model
+
+We use the `lm()` function and expand the formula to include the
+additional predictors:
+
+```{r}
+multivariate_lm <- lm(immigration ~ lr_scale + yob + gender + education, data = ncp_min)
+```
+
+### Creating a publication ready table
+
+The table generated by `summary()` is informative but can sometimes be
+overwhelming and not formatted for easy presentation. Besides, we often
+want tables that are polished and ready for publication (or even an MA
+thesis!). To create professional-looking tables, we can use the
+**`stargazer`** package. This package allows us to customize regression
+output tables and format them for use in documents.
+
+Since we are working in an HTML document, we'll specify `type = "html"`
+in the `stargazer()` function to ensure the output is properly
+formatted.
+
+A useful feature of the `stargazer()` function is that it allows us to
+include several models in the same table. To do so, simply specify the
+models in the order you want them to appear. For instance, to include
+both our **univariate** and **multivariate** models in one table, you
+can write:
+
+```{r, results='asis'}
+stargazer(univariate_lm, multivariate_lm, type = "html", 
+          title = "Comparison of Univariate and Multivariate Models", 
+          align = TRUE, single.row = TRUE)
+```
+
+This **side-by-side comparison** gives us a clear view of how the model
+changes as more variables are added. We'll interpret it together by
+considering the following questions:
+
+#### Questions:
+
+1.  What is the coefficient for `lr_scale` in the multivariate model?
+    How does it compare to the univariate model?
+
+2.  Is `gender` a statistically significant predictor? What does the
+    coefficient for the reference category suggest?
+
+3.  How does the Adjusted R² of the multivariate model compare to the
+    univariate model? Does adding predictors improve the model's fit?
+
+4.  Based on the coefficients for `education`, which education level is
+    associated with the most restrictive immigration attitudes?
+
+5.  What is the interpretation of the coefficient for `yob`? Does it
+    suggest older or younger individuals have more restrictive
+    immigration attitudes?
+
+### Coefficient plot
+
+Another way to interpret and compare models is to visualize the
+coefficients using the **`sjPlot`** package. In these visualizations,
+the dots represent the estimated coefficients, and the whiskers
+represent their confidence intervals. The confidence intervals are
+computed based on the standard errors of the coefficients, providing a
+range within which the true value of the coefficient is likely to fall
+(with a default confidence level of 95%).
+
+Conveniently, the `sjPlot` package also includes functionality to plot
+the coefficients of multiple models at once using the `plot_models()`
+function. If you want to plot only one model, you can use
+`plot_model()`. To visualize the results of our two models, simply
+write:
+
+```{r}
+plot_models(univariate_lm, multivariate_lm, 
+            title = "Comparison of Coefficients: Univariate vs Multivariate Models",
+            axis.labels = c("Year of Birth", "Education", "Gender", "Left-Right Self-Placement"),
+            legend.title = "Model",
+            show.values = TRUE, show.p = TRUE)
+```
+
+------------------------------------------------------------------------
+
+### Assignment for the rest of the session:
+
+Come up with a research question that can be answered with the data we
+have. The only rule is that you are not allowed to use `immigration` as
+the outcome variable. Formulate a hypothesis and test it using methods
+we have covered in this session.
+
+Conduct the analyses in a separate rmarkdown document, where you explain
+(very succinctly) what your hypothesis is, and the theory behind it. Tabulate and/or plot your results.
+
+Email me the output (tables and/or figures) so that we can go through
+them together at the end (*if* we have time).
