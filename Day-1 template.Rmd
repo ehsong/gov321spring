@@ -9,7 +9,7 @@ When answering the questions below, refer to `Day-0.html` and `Day-1.html`. They
 
 When you don't remember how to use a function, do ``?function name`` and read the help pane, it will help you use the arguments. Example: `?jitter`, `?head`
 
-1. Set your working directory. `ncp_min.RData` and this file should be in the same directory.
+1. Set your working directory to where this file is located. `ncp_min.RData` and this file should be in the same directory.
 
 2. Load the `ncp_min.RData`
 
