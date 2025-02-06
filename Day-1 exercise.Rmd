@@ -1,0 +1,105 @@
+---
+title: "Assignments Day 1"
+author: "Soran Hajo Dahl"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+### Assignments for day 1
+
+The goal of these exercises is to ensure that you have understood the key concepts covered in today's session and to familiarize yourself with how RMarkdown documents work.
+
+RMarkdown allows you to seamlessly integrate R code and text in a single document, making it an excellent tool for presenting your work. You will be required to submit your final assignment using RMarkdown, so this is a great opportunity to practice. Additionally, the skills you develop here will be useful for future assignments and even your MA thesis.
+
+### **Using RMarkdown and Code Chunks**
+
+In RMarkdown, code chunks allow you to execute R code within your document. A code chunk is enclosed within triple backticks (\`\`\`) and starts with `{r}` to indicate that it contains R code. Anything written after a `#` is treated as a **comment** and is ignored when the code is executed. Comments are useful for explaining what the code does without affecting its execution.
+
+```{r}
+# This is a comment. It will not run as code.
+```
+
+Simply write the code required to answer each of the below questions within the code chunks. Write out the answer in text below the chunks. When complete, use the knit button above to `knit to HTML`.
+
+### Part 1: 5+3
+
+What is 5+3?
+
+```{r}
+
+```
+
+### Part 2: Load up and examine the data
+
+For the rest of the questions, we'll we'll use the same data as in the rest of the session. Load it up in the code chunk below, and find the following:
+
+-   What are the variables called, and what class (e.g. `character`) is each of them?
+```{r}
+
+```
+
+-   Look up the first five observations. What is the gender of the third individual from the top?
+
+```{r}
+
+```
+
+### Part 3: Tables
+-   How many of the respondents have higher education?
+
+```{r}
+
+```
+
+-   Recode the education variable so that those without a university degree (`education` = 1 or 2) are combined into a single category coded 0, while respondents with a university degree (`education` = 3) are codeded 1. Then find the *percentage* of respondents that do not have a university degree.
+
+```{r}
+
+```
+
+-   Which party has the highest share of university degree holding voters? Which party has the lowest? What percentage of these parties' voters have a university degree?
+
+```{r}
+
+```
+
+### Part 4: Averages
+-   On average, are the respondents mostly positive or negative towards EU membership?
+
+```{r}
+
+```
+
+-   On average, are degree holders or non-degree holders more positive towards EU membership? What, exactly, are their positions on average?
+```{r}
+
+```
+
+### Part 5: Visualizing data
+-   Create a barplot of the respondents attitudes towards EU-membership:
+
+```{r}
+
+```
+
+-   Create a barplot of the respondents attitudes towards EU-membership broken down by their level of education (for extra points, plot the percentages rather than frequencies):
+
+```{r}
+
+```
+
+-   Now create boxplot showing attitudes towards EU-membership by vote intention.
+
+```{r}
+
+```
+
+### Part 6: Correlation
+
+-   What is the correlation between attitudes towards EU membership and immigration attitudes? Write a short interpretation of the result.
+
+```{r}
+
+```
+
+

@@ -1,0 +1,93 @@
+---
+title: "Day 1: Working with Survey Data in R Template"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+When answering the questions below, refer to `Day-0.html` and `Day-1.html`. They are all in the course github repository [https://github.com/ehsong/gov321spring?tab=readme-ov-file](https://github.com/ehsong/gov321spring?tab=readme-ov-file). We will work with the **Norwegian Citizen Panel (NCP)** collected in the spring of 2024. Respondents were randomly recruited from the Norwegian population registry, ensuring the data is nationally representative. Description of the dataset can be found in `Day-1.html`. 
+
+When you don't remember how to use a function, do ``?function name`` and read the help pane, it will help you use the arguments. Example: `?jitter`, `?head`
+
+1. Set your working directory. Remember to set it to where the `ncp_min.RData` is.
+
+2. Load the `ncp_min.RData`
+
+```{r}
+# Write your code in this block and press play button on top right to execute; remember text after the hash tag is not code and will not be executed. Click 'Knit to html' and see for yourself.
+
+
+load('ncp_min.RData')
+
+```
+
+3. Explore the data. What is the unit of observation? How many columns and rows are there in the dataframe? What are the data types? Check the first five rows and the last five rows.
+
+```{r}
+# Write your code in this block
+```
+
+**Question:** What party does the first person in in the dataset intend to vote for?
+
+**Question:** Does the second-to-last respondent identify as left-wing or right-wing?
+
+4. Examine the column `vote_intention`. What is the distribution of answers in the `vote_intention`? Remember that you can also count NAs.
+
+```{r}
+# Write your code in this block
+```
+
+5. Check missing values. How many values are missing in each column? Do you think there is a pattern? 
+
+**Question:** Which variable has the largest number of missing values? Which variable has the least?
+
+```{r}
+# Write your code in this block
+```
+
+6. Recode the responses 'would not vote' in the column `vote_intention` to `NA`. Use `table()` to check if they are properly coded.
+
+```{r}
+# Write your code in this block
+```
+
+7. Remove the NAs and use `summary()` to see descriptive statistics.
+
+```{r}
+# Write your code in this block
+```
+
+**Question:** Based on the results, are the respondents more left-wing or right-wing on average?
+
+8. Subset the data for only male respondents. Find the mean of left-right scale of men and women.
+
+```{r}
+# Write your code in this block
+```
+
+**Question:** Based on the results, are men or women more right-wing on average?
+
+9. Examine the relationship between `gender` and `vote_intention`.  Which parties show the largest gender gaps?
+
+```{r}
+# Write your code in this block
+```
+
+10. Choose variables in the dataframe and visualize them. Which plot will you use for each variable? There are scatter plots, histogram, bar plots, and boxplots. Remember the choice of plots depends a lot on the data type.
+
+```{r}
+# Write your code in this block
+```
+
+**Question**: Which party has the most left-wing and right-wing voters, respectively?
+
+**Question:** What seems to be the relationship between left-right self-placement and attitudes towards immigration?
+
+For better visualization, use `jitter()` to spread the points for `immigration` and `lr_scale` variables. For example if you want to visualize a scatter plot for `x` and `y` variables, run `plot(jitter(x), jitter(y))`
+
+
+11. Read about correlations in `Day-1.html`. Find the correlation between left-right self-placement and immigration attitudes and interpret it.
+
+```{r}
+# Write your code in this block
+```

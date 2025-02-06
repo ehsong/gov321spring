@@ -1,0 +1,487 @@
+---
+title: "GOV321"
+subtitle: "Day 1: Working with Survey Data in R"
+author: "DIGSSCORE LAB"
+date: "Seminars 12-15.02"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+    toc_depth: 5
+---
+
+------------------------------------------------------------------------
+
+### Introduction
+
+This document will guide you through analyzing survey data using R. By the end of this session, you will learn to:
+
+-   Explore datasets and understand their structure.
+
+-   Perform basic descriptive analyses.
+
+-   Create simple visualizations to summarize data.
+
+-   Interpret relationships between variables.
+
+We will work with survey data collected through the **Norwegian Citizen Panel (NCP)** in the spring of 2024. Respondents were randomly recruited from the Norwegian population registry, ensuring the data is nationally representative.
+
+To simplify things a bit, we use a subset of the original dataset, which includes a selection of variables that capture key demographic information, ideological positions and attitudes towards key societal issues.
+
+### Dataset Description
+
+The dataset contains the following variables, along with their response alternatives:
+
+1.  **`gender`**: Respondent's gender
+
+    -   Values: `male`, `female`
+
+2.  **`yob`**: Year of birth (grouped)
+
+    -   Values:
+
+        -   `1`: Born before 1960
+
+        -   `2`: Born between 1960 and 1989
+
+        -   `3`: Born after 1989
+
+3.  **`education`**: Highest level of education achieved
+
+    -   Values:
+
+        -   `1`: Elementary school
+
+        -   `2`: Upper secondary school
+
+        -   `3`: Higher education/university
+
+4.  **`vote_intention`**: The party respondents would vote for if parliamentary elections were held tomorrow
+
+    -   Values: All major Norwegian political parties
+
+5.  **`lr_scale`**: Ideological self-placement on a left-right political spectrum
+
+    -   Values: 11-point scale (`0` = Left-wing, `10` = Right-wing)
+
+6.  **`immigration`**: Perception of whether immigration is advantageous or disadvantageous
+
+    -   Values: 7-point scale (`1` = A very great advantage, `7` = A very great disadvantage)
+
+7.  **`eu`**: Attitudes toward EU membership
+
+    -   Values: 7-point scale (`1` = Very positive, `7` = Very negative)
+
+8.  **`climate`**: Level of concern about climate change
+
+    -   Values: 5-point scale (`1` = Not at all worried, `5` = Very worried)
+
+9.  **`economy`**: Perception of the current economic situation
+
+    -   Values: 7-point scale (`1` = Very good, `7` = Very bad)
+
+### Setting up
+
+#### Setting the Working Directory
+
+The working directory is the folder on your computer where all your analysis files (datasets, scripts, outputs) are stored. You must set it before starting your analysis.
+
+To set the working directory in RStudio: 1. Go to **Session** -\> **Set Working Directory** -\> **Choose Directory**. 2. Navigate to your folder and click **OK**.
+
+> **Tip:** To run a line of code in RStudio, press `Ctrl + Enter` (Windows) or `Cmd + Enter` (Mac).
+
+Set the working directory to whichever folder you have stored the data in.
+
+#### Loading Data
+
+We will start by loading the dataset `ncp_min.RData`.
+
+```{r}
+# Load the dataset
+load("ncp_min.RData")
+
+```
+
+Alternatively, you can use the Files tab in RStudio to import the dataset interactively.
+
+### Exploring the Data
+
+#### Understanding the Dataset Structure
+
+The `str()` function shows the overall structure of the dataset, including the number of rows, columns, and variable types.
+
+```{r}
+# Examine the structure of the dataset
+str(ncp_min)
+```
+
+> **Question:** What is the unit of observation? How many rows and columns are in the dataset? How many variables are in the dataset? What types of variables are included?
+
+### Viewing Data
+
+There are too many rows look at the whole dataset at once. To get a better idea of what the dataset looks like, we can print the first five rows using the `head()` function:
+
+```{r}
+head(ncp_min)
+```
+
+> **Question:** What party does the first person in in the dataset intend to vote for?
+
+-   Use `tail()` for the last five rows
+
+```{r}
+tail(ncp_min)
+```
+
+> **Question:** Does the second-to-last respondent identify as left-wing or right-wing?
+
+## Examining Variables
+
+### Accessing variables from dataset
+
+The `lr_scale` variale measures ideological self-placement on a left-right scale. You can access a specific variable using the `$` operator. To not overwhelm the output, we use the `head()` function again.
+
+```{r}
+head(ncp_min$lr_scale)
+```
+
+### Tabulating variables
+
+When analyzing survey data, we often want to know how many respondents selected each option for a given variable. We can easily calculate this using the table() function, which produces a frequency table. A frequency table shows the unique values a variable can take, along with the count of how many times each value appears.
+
+For example, let's examine the voting intentions of respondents in our dataset:
+
+```{r}
+table(ncp_min$vote_intention)
+```
+
+While raw counts are useful, percentages are often more informative. To convert the frequency table into percentages (proportions), we can wrap the `table()` function inside `prop.table()`. This will calculate the proportion of respondents for each category relative to the total number of respondents.
+
+```{r}
+prop.table(table(ncp_min$vote_intention))
+```
+
+### Missing values
+
+Missing values are common in real-world datasets, especially in survey data. In R, missing values are represented as `NA`. When analyzing data, it is essential to check for missing values to understand the completeness of the dataset.
+
+One useful function for this is `complete.cases()`. It returns `TRUE` for rows that **do not** contain any missing values and `FALSE` for rows that have at least one `NA`.
+
+Let's check the first few rows of our dataset to see which rows are complete and which contain missing values:
+
+```{r}
+head(complete.cases(ncp_min))
+```
+
+In R, `!` is the logical negation operator, meaning it reverses `TRUE` and `FALSE` values. If we place `!` before `complete.cases()`, it flips the results, so now `TRUE` indicates rows with missing values, and `FALSE` indicates complete rows.
+
+```{r}
+head(!complete.cases(ncp_min))
+```
+
+Helpfully, R recognizes logical values (`TRUE`/`FALSE`) as numeric, where `TRUE` is equal to 1, and `FALSE` as equal to 0:
+
+```{r}
+TRUE+TRUE
+1+TRUE
+TRUE+FALSE
+```
+
+Because of this, we can simply sum up the `TRUE` values from `!complete.cases()` to count the number of incomplete rows in our dataset. We do so using the `sum()` function:
+
+```{r}
+sum(!complete.cases(ncp_min))
+```
+
+If we want to examine missing values in a specific column, we can do something similar using the `is.na()` function, which returns `TRUE` if a specific value is `NA` and `FALSE` if it is not:\
+
+```{r}
+is.na(NA)
+is.na(1)
+is.na(c(NA, 1))
+```
+So to get the number of missing values in a specific column, we simply sum up the `NA`s. Let's have a look at the vote intention variable:
+
+```{r}
+sum(is.na(ncp_min$vote_intention))
+
+```
+If we want to know the number of mising values in each of the columns, we can use the `colSums()` variable on the whole dataset. It simply runs  the `sum()` function column by column:
+
+```{r}
+colSums(is.na(ncp_min))
+```
+
+> **Question:** Which variable has the largest number of missing values? Which variable has the least?
+
+Some functions in R automatically remove missing values before performing operations, but many do not. For example, the function `table()`ignores missing values by default. If you want the function to include them, you need to specify the optional argument named `exclude` and set it equal to `NULL`:
+
+```{r}
+table(ncp_min$vote_intention, exclude = NULL)
+```
+## Finding central tendency
+
+To find the mean of lr_scale, we can uses the mean() function:
+
+```{r}
+mean(ncp_min$lr_scale)
+```
+
+However, unlike `table()`, `mean()` does not automatically handle missing values. To tell the function to ignore missing values, we have to specify `na.rm=TRUE`.
+
+> **Tip:** To see how other functions deal with missing values, we can look up them up in the help tab (in the lower right window)
+
+```{r}
+mean(ncp_min$lr_scale, na.rm = TRUE)
+```
+
+The same goes for the `median()`
+
+```{r}
+median(ncp_min$lr_scale, na.rm = TRUE)
+```
+
+> **Question:** Based on the results, are the respondents more left-wing or right-wing on average?
+
+
+## Indexing and subsetting
+
+Indexing is a fundamental operation in R that allows you to access specific rows, columns, or subsets of a dataset. In R, indexing is performed using brackets `[]` immediately after the data frame object.
+
+The general syntax for indexing is: `data[row, column]`
+
+-   **`row`**: Specifies the row(s) to access.
+
+-   **`column`**: Specifies the column(s) to access.
+
+-   Leave the `row` or `column` empty to select all rows or all columns.
+
+-   Use a colon `:` for continuous indexing (e.g., columns 1 to 3).
+
+-   Use `c()` to specify multiple rows or columns explicitly.
+
+### Examples of Indexing
+
+#### 1. Accessing Specific Rows
+
+To select the first row and all columns:
+
+```{r}
+head(ncp_min[1,]) # first row, all columns
+```
+
+#### 2. Accessing Specific Columns
+
+To select all rows and only columns 1 to 3:
+
+```{r}
+head(ncp_min[,1:3]) # all rows, columns 1 to 3
+```
+
+To access specific columns by name, use `c()` with the column names:
+
+```{r}
+head(ncp_min[,c('lr_scale','vote_intention')])
+```
+
+### Subsetting Data
+
+Subsetting allows you to filter the dataset to retain only rows that meet certain conditions. This is often useful for comparisons or targeted analyses.
+
+#### Example: Subset to Retain Only Men
+
+Here, we filter the dataset to include only rows where `gender` is "male":
+
+```{r}
+head(ncp_min[ncp_min$gender == "male", ])
+```
+
+Filtering can also be useful for analyzing subgroups separately. For example, we can extract the left-right self-placement (`lr_scale`) scores for men:
+```{r}
+# Mean left-right placement for men
+head(ncp_min$lr_scale[ncp_min$gender == "male"])
+
+```
+
+And use this to compare statistics (e.g., means) for different subgroups. For example, let's calculate the **mean left-right placement (`lr_scale`)** for men and women:
+
+```{r}
+# Mean left-right placement for men
+mean(ncp_min$lr_scale[ncp_min$gender == "male"], na.rm = TRUE)
+
+# Mean left-right placement for women
+mean(ncp_min$lr_scale[ncp_min$gender == "female"], na.rm = TRUE)
+
+```
+
+> **Question:** Based on the results, are men or women more right-wing on average?
+
+## Recoding Variables
+
+As we observed earlier, the `vote_intention` variable includes a response category labeled "would not vote." While this category can be insightful for some research questions, it is not relevant to our current purposes Therefore, we will recode these responses as `NA` (missing values) so that they are excluded from subsequent analyses.
+
+We use the `ifelse()` function for this task. The `ifelse()` function allows us to test a condition and replace values accordingly.
+
+The syntax of `ifelse()` is: `ifelse(condition, value_if_true, value_if_false)`
+
+For our task:
+
+-   **Condition**: `ncp_min$vote_intention == "would not vote"` checks if a respondent selected "would not vote."
+
+-   **Value if TRUE**: Replace with `NA`.
+
+-   **Value if FALSE**: Retain the current value of `vote_intention`.
+
+The complete code to recode the "would not vote" responses is:
+
+```{r}
+ncp_min$vote_intention <- ifelse(ncp_min$vote_intention == "would not vote", NA, ncp_min$vote_intention)
+```
+
+To confirm that the "would not vote" category has been successfully replaced with NA, we can use the `table()` function again:
+
+```{r}
+table(ncp_min$vote_intention)
+```
+
+
+## Analyzing Relationships
+
+### Crosstables
+
+Above, we used the `table()` function to tabulate the values of a single variable. However, in many cases, we want to examine how responses are distributed **across two variables** simultaneously. For this, we can create a **crosstable** using the same `table()` function.
+
+The `table()` function allows us to generate crosstables by simply specifying the two variables we want to analyze. In the resulting output:
+
+-   The **rows** represent the values of the first specified variable.
+
+-   The **columns** represent the values of the second specified variable.
+
+-   The cells in the table display the frequency (count) of observations for each combination of the two variables.
+
+#### Example: Gender and Voting Intention
+
+Let's examine the relationship between **gender** and **voting intention**:
+
+```{r}
+table(ncp_min$gender, ncp_min$vote_intention)
+```
+
+Like above, we can transform the raw counts into percentages with the `prop.table()` function.The basic prop.table() function calculates percentages across all cells in the table (relative to the total number of respondents):
+
+```{r}
+# Overall percentages
+prop.table(table(ncp_min$gender, ncp_min$vote_intention), 1)
+```
+
+To better understand gender differences in voting intention, it is helpful to calculate percentages **within rows** (i.e., the percentage of respondents in each voting intention category for each gender). This is done by setting the `margin` argument to `1`, which specifies that percentages should be calculated within rows:
+
+```{r}
+prop.table(table(ncp_min$gender, ncp_min$vote_intention), margin = 1)
+```
+
+> **Question:** Which parties show the largest gender gaps?
+
+## Visualizing Data
+
+When visualizing data, it is important to choose the right type of visualization based on the type of variables you are working with:
+
+-   **Categorical Variables**: Use bar plots to display counts or proportions of categories.
+
+-   **Numeric Variables**: Use histograms or box plots to show distributions.
+
+-   **Relationships Between Variables**: Use scatter plots or grouped box plots depending on the type of data.
+
+Below, we walk through basic visualizations for categorical and numeric variables, as well as methods for exploring relationships between them.
+
+#### 1. Bar Plots for Categorical Variables
+
+A bar plot is an excellent way to visualize the counts (or proportions) of categories in a variable. For example, to visualize **vote intentions**, we can create a bar plot using the `barplot()` function and the output of `table()`:
+
+```{r}
+# Bar plot for vote intentions
+barplot(table(ncp_min$vote_intention),
+        ylab = "Counts", xlab = "Party", main = "Vote Intention Counts")
+```
+
+If you want to break this down by another variable, such as **gender**, you can create a grouped bar plot:
+
+```{r}
+# Bar plot for vote intention by gender
+barplot(table(ncp_min$gender, ncp_min$vote_intention), 
+        beside = TRUE, legend.text = TRUE,
+        ylab = "Counts", xlab = "Party", main = "Vote Intention by Gender")
+```
+
+#### 2. Histograms for Numeric Variables
+
+To visualize the distribution of numeric variables, use a histogram. A histogram automatically bins numeric values into intervals and shows the frequency of observations within each bin. For example, let's examine the distribution of the **left-right scale** variable:
+
+```{r}
+# Histogram for left-right self-placement
+hist(ncp_min$lr_scale, 
+     main = "Distribution of Left-Right Self-Placement", 
+     xlab = "Left-Right Scale")
+```
+
+#### 3. Box Plots for Numeric Variables
+
+A box plot is useful for summarizing the distribution of a numeric variable by showing its median, quartiles, and potential outliers. For instance:
+
+```{r}
+
+# Box plot for left-right self-placement
+boxplot(ncp_min$lr_scale)
+
+```
+
+You can also use a box plot to compare the distribution of a numeric variable across categories of a categorical variable. For example, to explore **left-right self-placement** by **voting intention**:
+
+```{r}
+boxplot(ncp_min$lr_scale~ncp_min$vote_intention)
+```
+
+> Question: Which party has the most left-wing and right-wing voters, respectively?
+
+#### 4. Scatter Plots for Relationships Between Numeric Variables
+
+A scatter plot is used to examine the relationship between two numeric variables. It uses dots to represent individual data points. For example, let's look at the relationship between **left-right ideology** (`lr_scale`) and **immigration attitudes** (`immigration`):
+
+```{r}
+# Basic scatter plot
+plot(ncp_min$immigration, ncp_min$lr_scale)
+```
+
+Evidently, this scatter plot is not very informative. That is because both of our variables are **ordinal** (as opposed to continuous) and contain only a few distinct values. As a result, all the dots end up stacked on top of each other, making it difficult to discern any patterns.
+
+To address this, we can use the `jitter()` function. This function adds a small amount of random noise (or "jitter") to each data point, which helps to spread the points out and make the relationships more visible. By applying `jitter()` to both the **x-axis** and **y-axis** variables, we can get a better sense of the relationship between the two.
+
+```{r}
+# Scatter plot with jitter
+plot(jitter(ncp_min$immigration), jitter(ncp_min$lr_scale))
+```
+
+> **Question:** What seems to be the relationship between left-right self-placement and attitudes towards immigration?
+
+### Correlation
+
+While the plots we have been through provides us with useful ways to visually represent the relationship between two variables, sometimes it is helpful to summarize the relationship with a number. For that purpose, we use the correlation coefficient.
+
+Correlation measures the strength and direction of the relationship between two numeric variables. In R, we typically calculate the Pearson correlation coefficient, which quantifies how strongly two variables are linearly related. This coefficient ranges from:
+
+-   **-1**: Perfect negative correlation (as one variable increases, the other decreases).
+
+-   **0**: No linear correlation.
+
+-   **+1**: Perfect positive correlation (as one variable increases, the other also increases).
+
+To calculate the correlation between two numeric variables, use the `cor()` function. For example, let's examine the relationship between **left-right self-placement (`lr_scale`)** and **immigration attitudes (`immigration`)**:
+
+```{r}
+# Correlation between left-right self-placement and immigration attitudes
+cor(ncp_min$lr_scale, ncp_min$immigration, use = "complete.obs")
+```
+
+> **Question:** What is the correlation between left-right self-placement and immigration attitudes?
+
