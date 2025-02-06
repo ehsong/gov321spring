@@ -21,7 +21,7 @@ To view the html file properly please download from the link and open it using a
 
 - 5 Feb: Day 0 Introduction to R [Rmd](https://github.com/ehsong/gov321spring/blob/main/Day-0.Rmd) [html](https://github.com/ehsong/gov321spring/blob/main/Day-0.html) (practice questions: [Rmd](https://github.com/ehsong/gov321spring/blob/main/Day-0%20Practice%20Q.Rmd), answer key: [html](https://github.com/ehsong/gov321spring/blob/main/Day-0-Answer-Keys.html))
   - Introduction, Chapters 1 & 3
-- 10 Feb: Day 1 Working with Survey Data in R Rmd
+- 10 Feb: Day 1 Working with Survey Data in R [Rmd](https://github.com/ehsong/gov321spring/blob/main/Day-1%20template.Rmd) [html](https://github.com/ehsong/gov321spring/blob/main/Day-1.html) (practice questions: [Rmd](https://github.com/ehsong/gov321spring/blob/main/Day-1%20exercise.Rmd) answer key: [Rmd](https://github.com/ehsong/gov321spring/blob/main/Day-1%20exercise%20key.Rmd)
   - Chapters 1 & 3
 - 11 Feb: Day 2 Regression in R Rmd
   - Chapters 4 and 7.3-7.6 in Chapter 7
