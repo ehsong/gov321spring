@@ -28,7 +28,8 @@ To view the html file properly please download from the link and open it using a
 - 11 Feb: Day 2 Regression in R [html](https://github.com/ehsong/gov321spring/blob/main/Day-2.html)
   - Chapters 4 and 7.3-7.6 in Chapter 7
   - Email your R Markdown to Esther or Soran for feedback (optional)
-- 12 Feb: Day 3 Experiments Rmd    
+- 12 Feb: Day 3 Experiments Rmd
+  - Chapters 2 and 7.3 in Chapter 7   
 - 13 Feb: Compulsory Assignment (in-class exam, open book)     
 
 ### Additional Resources for Learning R
