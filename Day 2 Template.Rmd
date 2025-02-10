@@ -7,6 +7,7 @@ output: html_document
 **Tips**
 
 - Make sure to put all files in the same folder - the `.RData` file and this `.Rmd` file. Or else you will not be able to knit. You will be able to find the final knitted html file in the same folder.
+- Do not leave unncessary code in the code block, like printing out the entire data set. Only include the code that is relevant to answering the question.
 - Do not have text within the code block or you will not be able to knit. You can use hashtags to write notes to yourself, but when you submit your compulsory assignment keep these note to a minimum. If you need to explain anything, write outside the block.
 - Remember to write your name on top.
 
