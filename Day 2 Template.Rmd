@@ -4,12 +4,25 @@ author: "Your Name"
 date: "`r Sys.Date()`"
 output: html_document
 ---
+**Tips**
+
+- Make sure to put all files in the same folder - the `.RData` file and this `.Rmd` file. Or else you will not be able to knit. You will be able to find the final knitted html file in the same folder.
+- Do not have text within the code block or you will not be able to knit. You can use hashtags to write notes to yourself, but when you submit your compulsory assignment keep these note to a minimum. If you need to explain anything, write outside the block.
+- Remember to write your name on top.
+
 
 We will continue to work with `ncp_min.RData`. You will also need the `Day-2.html` as a guide to work on this template. We will work through the example of whether left-right self-placement (`lr_scale`) predicts immigration attitudes (`immigration`). 
 
 
-Before starting with anything, download the packages and load using `library()`:
-```{r}
+Before starting anything, download the packages using `install.packages()` and load using `library()`.
+
+```{r, include=FALSE}
+# Note: this block will not display output because of the argument include=False
+
+# Set CRAN mirror
+options(repos = c(CRAN = "https://cloud.r-project.org/"))
+
+# install packages
 install.packages("stargazer")
 install.packages("sjPlot")
 
@@ -18,8 +31,6 @@ library(stargazer)
 library(sjPlot)
 ```
 
-Make sure to have everything in the same folder - the .RData, and this .Rmd file. Or else you will not be able to knit.
- 
 1. Load `ncp_min.RData`
 
 ```{r}
@@ -61,7 +72,6 @@ What is the intercept and the coefficient estimate of `lr_scale`? Explain how on
 ```
 
 
-
 7. What is the predicted value of immigration for respondents who place themselves as a 0 (far left) on the `lr_scale`? How about those who place themselves `lr_scale = 5` (center) and `lr_scale = 10` (far right)?
 
 ```{r}
@@ -93,7 +103,7 @@ One way to assess the fit of a liner regression model is plotting the linear reg
 12. How does the coefficient estimate `lr_scale` in the univariate model compare to that in the multivariate model? If there is a difference, why?
 
 
-13. How does the Adjusted R² of the multivariate model compare to the univariate model? Does adding predictors improve the model’s fit?
+13. How does the Adjusted R² of the multivariate model compare to the univariate model? Does adding variables improve the model’s fit?
 
 
 14. Visualize coefficient estimates and the confidence intervals for the univariate and the multivariate model. Use `plot_models()`
@@ -104,6 +114,6 @@ One way to assess the fit of a liner regression model is plotting the linear reg
 
 Knit the .Rmd file to .html file and send it to either Soran or Esther for feedback.
 
-Also if you have time left: come up with a research question that can be answered with the data we have. The only rule is that you are not allowed to use immigration as the outcome variable. Formulate a hypothesis and test it using methods we have covered in this session.
+If you have time left: come up with a research question that can be answered with the data we have. The only rule is that you are not allowed to use immigration as the outcome variable. Formulate a hypothesis and test it using methods we have covered in this session.
 
-Conduct the analyses in a separate rmarkdown document, where you explain (very succinctly) what your hypothesis is, and the theory behind it. Tabulate and/or plot your results. Email one of us the output (tables and/or figures) so that we can go through them together at the end (if we have time).
+Conduct the analyses in a separate rmarkdown document, where you explain (very succinctly) what your hypothesis is, and the theory behind it. Tabulate and/or plot your results. Email one of us the knitted html file so that we can go through them together at the end (if we have time).
