@@ -11,7 +11,7 @@ output: html_document
 - Remember to write your name on top.
 
 
-We will continue to work with `ncp_min.RData`. You will also need the `Day-2.html` as a guide to work on this template. We will work through the example of whether left-right self-placement (`lr_scale`) predicts immigration attitudes (`immigration`). 
+We will continue to work with `ncp_min.RData`. You will also need the `Day-2.html` as a guide to work on this template. Download `Day-2.html` here:[https://github.com/ehsong/gov321spring/blob/main/Day-2.html](https://github.com/ehsong/gov321spring/blob/main/Day-2.html). We will work through the example of whether left-right self-placement (`lr_scale`) predicts immigration attitudes (`immigration`). 
 
 
 Before starting anything, download the packages using `install.packages()` and load using `library()`.
