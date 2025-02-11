@@ -18,6 +18,7 @@ Before doing anything, install and load the packages required for plotting.
 options(repos = c(CRAN = "https://cloud.r-project.org/"))
 
 install.packages('ggplot2')
+install.packages('gplots')
 
 library(ggplot2)
 library(gplots)
